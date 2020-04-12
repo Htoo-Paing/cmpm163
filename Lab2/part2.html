@@ -29,7 +29,7 @@
           scene.add(light2);
 
           var loader = new THREE.GLTFLoader();
-          loader.load('dog.glb', function (gltf) {
+          loader.load('objects/dog.glb', function (gltf) {
 
             gltf.scene.position.x = -65;
             gltf.scene.rotation.y = -5;
@@ -45,7 +45,7 @@
           });
 
           var loader2 = new THREE.GLTFLoader();
-          loader2.load('cat.glb', function (gltf) {
+          loader2.load('objects/cat.glb', function (gltf) {
 
             gltf.scene.position.x = 25;
             gltf.scene.position.y = 54;
@@ -62,7 +62,7 @@
           });
 
           var loader3 = new THREE.GLTFLoader();
-          loader3.load('books.glb', function (gltf) {
+          loader3.load('objects/books.glb', function (gltf) {
 
             gltf.scene.position.x = 50;
             gltf.scene.position.y = 15;
