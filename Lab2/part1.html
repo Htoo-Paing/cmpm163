@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Lab 2: Intro to Three.js Part 1</title>
+        <style>
+            body { margin: 0; }
+            canvas { display: block; }
+        </style>
+    </head>
+    <body>
+        <script src="../three.js-master/build/three.js"></script>
+        <script>
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera(75, 
+                window.innerWidth/window.innerHeight, 0.1, 1000);
+
+            var renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+
+            var geometry = new THREE.BoxGeometry();
+            var material = new THREE.MeshBasicMaterial( {color: 0xcd7f32} );
+
+            var cube = new THREE.Mesh(geometry, material);
+            scene.add(cube);
+
+            var geometry2 = new THREE.BoxGeometry();
+            var material2 = new THREE.MeshBasicMaterial( {color: 0xffffff} );
+
+            var cube2 = new THREE.Mesh(geometry2, material2);
+            scene.add(cube2);
+            cube2.position.x = -2;
+
+            var geometry3 = new THREE.BoxGeometry();
+            var material3 = new THREE.MeshBasicMaterial( {color: 0xadd8e6} );
+
+            var cube3 = new THREE.Mesh(geometry3, material3);
+            scene.add(cube3);
+            cube3.position.x = 2;
+
+            camera.position.z = 5; //this moves the camera towards the viewer
+
+            var scale = 1;
+            var scaleDown = false;
+
+            var y = 0;
+            var up = true;
+
+            function animate() {
+                requestAnimationFrame(animate);
+                renderer.render(scene, camera);
+
+                geometry.rotateX(0.01);
+                geometry.rotateY(0.01);
+
+                geometry2.rotateX(-0.02);
+
+                if (up) {
+                    geometry2.translate(0, 0.02, 0);
+                    y = y + 0.02;
+                }
+                else {
+                    geometry2.translate(0, -0.02, 0);
+                    y = y - 0.02;
+                }
+                if (y >= 0.5) {
+                    up = false;
+                }
+                if (y <= 0.5) {
+                    up = true;
+                }
+
+                geometry3.rotateY(0.02);
+                geometry3.rotateX(0.01);
+
+                if (scaleDown) {
+                    geometry3.scale(0.95, 0.95, 0.95);
+                    scale = scale * 0.95;
+                }
+                else {
+                    geometry3.scale(1/0.95, 1/0.95, 1/0.95);
+                    scale = scale * 1/0.95;
+                }
+
+                if (scale >= 0.9) {
+                    scaleDown = true;
+                }
+                else if (scale <= 0.1) {
+                    scaleDown = false;
+                }
+                console.log("Scale" + scale);
+            }
+            animate();
+
+
+
+        </script>
+    </body>
