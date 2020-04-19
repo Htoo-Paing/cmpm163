@@ -1,0 +1,197 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Lab 3: Shaders in Three.js</title>
+        <style>
+            body { margin: 0; }
+            canvas { display: block; }
+        </style>
+    </head>
+    <body>
+        <script src="../three.js-master/build/three.js"></script>
+        <script>
+          //PART 2--------
+          THREE.Cache.enabled = true;
+          var count = 0;
+          var count2 = 0;
+          var loader = new THREE.FileLoader();
+          var fshader, vshader;
+          var fsharder2, vshader2;
+
+          loader.load('shaders/vertexShader.vert',
+          // onLoad callback
+          function (data) {
+          console.log(data); // output the text to the console
+          vshader = data;
+          count += 1;
+          addCoolCube();
+        },
+        // onProgress callback
+        function (xhr) {
+          console.log((xhr.loaded/xhr.total * 100)+ '% loaded');
+        },
+        // onError callback
+        function (err) {
+          console.error('An error happened');
+        });
+
+          loader.load('shaders/vertexShader2.vert',
+          // onLoad callback
+          function (data) {
+          console.log(data); // output the text to the console
+          vshader2 = data;
+          count2 += 1;
+          addCubeNo2();
+        },
+        // onProgress callback
+        function (xhr) {
+          console.log((xhr.loaded/xhr.total * 100)+ '% loaded');
+        },
+        // onError callback
+        function (err) {
+          console.error('An error happened');
+        });
+
+        loader.load('shaders/fragmentShader.frag',
+        // onLoad callback
+        function (data) {
+        console.log(data); // output the text to the console
+        fshader = data;
+        count += 1;
+        addCoolCube();
+      },
+
+      // onProgress callback
+      function (xhr) {
+        console.log((xhr.loaded/xhr.total * 100)+ '% loaded');
+      },
+      // onError callback
+      function (err) {
+        console.error('An error happened');
+      });
+
+        loader.load('shaders/fragmentShader2.frag',
+        // onLoad callback
+        function (data) {
+        console.log(data); // output the text to the console
+        fshader2 = data;
+        count2 += 1;
+        addCubeNo2();
+      },
+
+      // onProgress callback
+      function (xhr) {
+        console.log((xhr.loaded/xhr.total * 100)+ '% loaded');
+      },
+      // onError callback
+      function (err) {
+        console.error('An error happened');
+      });
+
+
+      var geometryPart2, materialPart2, meshPart2;
+      var geometryPart22, materialPart22, meshPart22;
+
+      function addCoolCube() {
+        if(count == 2) {
+          let uniforms = {
+            colorB: {type: 'vec3', value: new 
+            THREE.Color(0xACB6E5)},
+            colorA: {type: 'vec3', value: new 
+            THREE.Color(0x74ebd5)}
+          };
+
+          geometryPart2 = new THREE.BoxGeometry(1, 1, 1);
+          materialPart2 =  new THREE.ShaderMaterial({
+            fragmentShader: fshader,
+            uniforms: uniforms,
+            vertexShader: vshader,
+            precision: "mediump"});
+
+          meshPart2 = new THREE.Mesh(geometryPart2, materialPart2);
+          meshPart2.position.x = -1.5;
+          meshPart2.position.y = -1.5;
+          scene.add(meshPart2);
+        }
+      }
+
+      function addCubeNo2() {
+        if(count2 == 2) {
+          let uniforms2 = {
+            colorB: {type: 'vec3', value: new 
+            THREE.Color(0xebf2f8)},
+            colorA: {type: 'vec3', value: new 
+            THREE.Color(0xf7ad90)}
+          };
+
+          geometryPart22 = new THREE.BoxGeometry(1, 1, 1);
+          materialPart22 =  new THREE.ShaderMaterial({
+            fragmentShader: fshader2,
+            uniforms: uniforms2,
+            vertexShader: vshader2,
+            precision: "mediump"});
+
+          meshPart22 = new THREE.Mesh(geometryPart22, materialPart22);
+          meshPart22.position.x = 1.5;
+          meshPart22.position.y = -1.5;
+          scene.add(meshPart22);
+        }
+      }
+      //------------------------------
+
+            // setup the scene
+                  var scene = new THREE.Scene();
+                  var camera = new THREE.PerspectiveCamera(75, 
+                    window.innerWidth/window.innerHeight, 0.1, 1000);
+                  var renderer = new THREE.WebGLRenderer();
+                  renderer.setSize(window.innerWidth, window.innerHeight);
+                  document.body.appendChild(renderer.domElement);
+                  camera.position.z = 5;
+            
+            // setup the cube
+            var geometry = new THREE.BoxGeometry();
+            //var material = new THREE.MeshBasicMaterial( { color: 0x00ff00 } );
+            var material = new THREE.MeshPhongMaterial( { color: 0xdddddd, 
+              specular: 0x00ff00, shininess: 30 });
+            var cube = new THREE.Mesh( geometry, material );
+            scene.add(cube);
+            cube.position.x = 1.5;
+            cube.position.y = 1.5;
+
+            //setup cube #2 for part 1
+            var geometry1 = new THREE.BoxGeometry();
+            var material1 = new THREE.MeshPhongMaterial( { color: 0xcd7f32,
+              specular: 0x0047ab, shininess: 50 , opacity: 0.75, transparent: true, emissive: 0xffffff, emissiveIntensity: 0.35});
+            var cube1 = new THREE.Mesh( geometry1, material1);
+            scene.add(cube1);
+            cube1.position.x = -1.5;
+            cube1.position.y = 1.5;
+
+            // add the light
+            var light = new THREE.PointLight(0xffffff, 1, 1000);
+            light.position.set(10, 10, 10);
+            scene.add(light);
+
+            function animate() {
+                requestAnimationFrame(animate);
+                geometry.rotateX(0.02);
+                geometry.rotateY(0.02);
+                geometry1.rotateX(-0.02);
+                geometry1.rotateY(0.02);
+                if(geometryPart2) {
+                  geometryPart2.rotateX(-0.02);
+                  geometryPart2.rotateY(-0.02);
+                }
+                if(geometryPart22) {
+                  geometryPart22.rotateX(0.02);
+                  geometryPart22.rotateY(-0.02);
+                }
+                renderer.render(scene, camera);
+            }
+            animate();
+
+
+        </script>
+    </body>
+</html>
