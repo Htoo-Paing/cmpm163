@@ -51,7 +51,7 @@
 
             // add second light
             var light2 = new THREE.PointLight(0xffffff, 1, 1000);
-            light.position.set(10, -10, 10);
+            light2.position.set(10, -10, -10);
             scene.add(light2);
 
             var origin = new THREE.Vector3(0, 0, 0);
@@ -62,9 +62,79 @@
                 renderer.render(scene, camera);
                 //light.position.x += 0.1;
                 rotateAboutPoint(light, origin, axis, 0.01, true);
-                rotateAboutPoitn(light2, origin, axis, 0.01, true);
+                rotateAboutPoint(light2, origin, axis, -0.01, true);
             }
             animate();
+
+            //PART 2 ------------------
+
+            THREE.Cache.enabled = true;
+            var count = 0;
+            var loader = new THREE.FileLoader();
+            var fshader, vshader;
+
+            var geometry1, material1, mesh1;
+
+            function addTextureShaderCube() {
+              if(count == 2) {
+                var uniforms = {texture1: { type: "t", value: 
+                THREE.ImageUtils.loadTexture("textures/158.jpg")}};
+
+                // let uniforms = {
+                //   colorB: {type: 'vec3', value: new THREE.Color(0xACB6E5)},
+                //   colorA: {type: 'vec3', value: new THREE.Color(0x74ebd5)}
+                // };
+
+                geometry1 = new THREE.BoxGeometry(1, 1, 1);
+                material1 =  new THREE.ShaderMaterial({
+                  uniforms: uniforms,
+                  fragmentShader: fshader,
+                  vertexShader: vshader,
+                  precision: "mediump"});
+
+                mesh1 = new THREE.Mesh(geometry1, material1);
+                mesh1.position.x = -1;
+                mesh1.position.y = -2;
+                scene.add(mesh1);
+              }
+            }
+
+
+            loader.load('shaders/vertexShader.vert',
+            // onLoad callback
+            function (data) {
+              console.log(data); // output the text to the console
+              vshader = data;
+              count += 1;
+              addTextureShaderCube();
+            },
+            // onProgress callback
+            function (xhr) {
+              console.log((xhr.loaded/xhr.total * 100)+ '% loaded');
+            },
+            // onError callback
+            function (err) {
+              console.error('An error happened');
+            });
+
+            loader.load('shaders/fragmentShader.frag',
+            // onLoad callback
+            function (data) {
+              console.log(data); // output the text to the console
+              fshader = data;
+              count += 1;
+              addTextureShaderCube();
+            },
+            // onProgress callback
+            function (xhr) {
+              console.log((xhr.loaded/xhr.total * 100)+ '% loaded');
+            },
+            // onError callback
+            function (err) {
+              console.error('An error happened');
+            });
+
+            //------------------ PART 2
 
             // helper pivot rotation code obtained from below:
             // https://stackoverflow.com/questions/42812861/three-js-pivot-point/42866733#42866733
