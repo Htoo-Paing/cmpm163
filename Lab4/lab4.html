@@ -1,0 +1,97 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <meta charset="utf-8">
+        <title>Lab 4: Textures & Normal Maps</title>
+        <style>
+            body { margin: 0; }
+            canvas { display: block; }
+        </style>
+    </head>
+    <body>
+        <script src="../three.js-master/build/three.js"></script>
+        <script>
+            // setup the scene
+            var scene = new THREE.Scene();
+            var camera = new THREE.PerspectiveCamera(75, 
+              window.innerWidth/window.innerHeight, 0.1, 1000);
+            var renderer = new THREE.WebGLRenderer();
+            renderer.setSize(window.innerWidth, window.innerHeight);
+            document.body.appendChild(renderer.domElement);
+            camera.position.z = 5;
+            
+            // setup the cube
+            var geometry = new THREE.BoxGeometry();
+            var texture = THREE.ImageUtils.loadTexture("textures/184.jpg");
+            var normMap = THREE.ImageUtils.loadTexture("textures/184_norm.jpg");
+            var material = new THREE.MeshPhongMaterial({map: texture, normalMap: normMap});
+            var cube = new THREE.Mesh(geometry, material);
+            scene.add(cube);
+
+            // setup second cube without the normal map
+            var texture2 = THREE.ImageUtils.loadTexture("textures/184.jpg");
+            var material2 = new THREE.MeshPhongMaterial( { map: texture2 } );
+            var cube2 = new THREE.Mesh(geometry, material2);
+            scene.add(cube2);
+            cube2.position.x -= 2;
+
+            // setup third cube with different materials
+            var geometry3 = new THREE.BoxGeometry();
+            var texture3 = THREE.ImageUtils.loadTexture("textures/191.jpg");
+            var normMap3 = THREE.ImageUtils.loadTexture("textures/191_norm.jpg");
+            var material3 = new THREE.MeshPhongMaterial( { map: texture3, normalMap: normMap3});
+            var cube3 = new THREE.Mesh(geometry3, material3);
+            scene.add(cube3);
+            cube3.position.x += 2;
+
+            // add the light
+            var light = new THREE.PointLight(0xffffff, 1, 1000);
+            light.position.set(10, 10, 10);
+            scene.add(light);
+
+            // add second light
+            var light2 = new THREE.PointLight(0xffffff, 1, 1000);
+            light.position.set(10, -10, 10);
+            scene.add(light2);
+
+            var origin = new THREE.Vector3(0, 0, 0);
+            var axis = new THREE.Vector3(1, 1, 0);
+
+            function animate() {
+                requestAnimationFrame(animate);
+                renderer.render(scene, camera);
+                //light.position.x += 0.1;
+                rotateAboutPoint(light, origin, axis, 0.01, true);
+                rotateAboutPoitn(light2, origin, axis, 0.01, true);
+            }
+            animate();
+
+            // helper pivot rotation code obtained from below:
+            // https://stackoverflow.com/questions/42812861/three-js-pivot-point/42866733#42866733
+            //
+            // obj - your object (THREE.Object3D or derived)
+            // point - the point of rotation (THREE.Vector3)
+            // axis - the axis of rotation (normalized THREE.Vector3)
+            // theta - radian value of rotation
+            // pointIsWorld - boolean indicating the point is in world coordinates (default = false)
+            function rotateAboutPoint(obj, point, axis, theta, pointIsWorld){
+              pointIsWorld = (pointIsWorld === undefined)? false : pointIsWorld;
+
+              if(pointIsWorld){
+                obj.parent.localToWorld(obj.position);    // compensate for world coordinate
+              }
+
+              obj.position.sub(point);                    // remove the offset
+              obj.position.applyAxisAngle(axis, theta);   // rotate the POSITION
+              obj.position.add(point);                    // re-add the offset
+
+              if(pointIsWorld){
+                obj.parent.worldToLocal(obj.position);    // undo world coordinates compensation
+              }
+
+              obj.rotateOnAxis(axis, theta);              // rotate the OBJECT
+            }
+
+        </script>
+    </body>
+</html>
