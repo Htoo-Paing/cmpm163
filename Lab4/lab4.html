@@ -10,6 +10,23 @@
     </head>
     <body>
         <script src="../three.js-master/build/three.js"></script>
+        <script id="vertexShader2" type="x-shader/x-vertex">
+          // code for vertex shader
+          varying vec2 vUv;
+          void main() {
+            vUv = uv;
+            vec4 modelViewPosition = modelViewMatrix * vec4(position, 1.0);
+            gl_Position = projectionMatrix * modelViewPosition;
+          }
+        </script>
+        <script id="fragmentShader2" type="x-shader/x-fragment">
+          // code for fragment shader
+          uniform sampler2D texture1;
+          varying vec2 vUv;
+          void main() {
+            gl_FragColor = texture2D(texture1, vUv * vec2(2, 2));
+          }
+        </script>
         <script>
             // setup the scene
             var scene = new THREE.Scene();
@@ -37,8 +54,8 @@
 
             // setup third cube with different materials
             var geometry3 = new THREE.BoxGeometry();
-            var texture3 = THREE.ImageUtils.loadTexture("textures/191.jpg");
-            var normMap3 = THREE.ImageUtils.loadTexture("textures/191_norm.jpg");
+            var texture3 = THREE.ImageUtils.loadTexture("textures/199.jpg");
+            var normMap3 = THREE.ImageUtils.loadTexture("textures/199_norm.jpg");
             var material3 = new THREE.MeshPhongMaterial( { map: texture3, normalMap: normMap3});
             var cube3 = new THREE.Mesh(geometry3, material3);
             scene.add(cube3);
@@ -133,6 +150,24 @@
             function (err) {
               console.error('An error happened');
             });
+
+            var uniforms2 = {texture1: { type: "t", value: 
+            THREE.ImageUtils.loadTexture("textures/191.jpg")}};
+
+            uniforms2.texture1.value.wrapS = THREE.RepeatWrapping;
+            uniforms2.texture1.value.wrapT = THREE.RepeatWrapping;
+
+            geometry12 = new THREE.BoxGeometry(1, 1, 1);
+            material12 = new THREE.ShaderMaterial({
+              uniforms: uniforms2,
+              vertexShader: document.getElementById('vertexShader2').textContent,
+              fragmentShader: document.getElementById('fragmentShader2').textContent
+            });
+
+            mesh12 = new THREE.Mesh(geometry12, material12);
+            mesh12.position.x = 1;
+            mesh12.position.y = -2;
+            scene.add(mesh12);
 
             //------------------ PART 2
 
