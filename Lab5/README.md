@@ -1,6 +1,8 @@
 # Lab 5 for CMPM 163
 Introduction to particles.
 
+I have chosen to do Part 2.
+
 Google Drive link to videos:
 https://drive.google.com/open?id=1KoMqn7huD2G8fPlzVlVvJx87G9U4mgZH
 
