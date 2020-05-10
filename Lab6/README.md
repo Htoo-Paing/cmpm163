@@ -1,6 +1,8 @@
 # Lab 4 for CMPM 163
 Introduction to Shadertoy.
 
+Shadertoy (Part 2) was the selected assignment.
+
 Link to my Shadertoy Project:
 https://www.shadertoy.com/view/tsXBW2
 
