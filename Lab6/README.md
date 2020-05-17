@@ -1,4 +1,4 @@
-# Lab 4 for CMPM 163
+# Lab 6 for CMPM 163
 Introduction to Shadertoy.
 
 Shadertoy (Part 2) was the selected assignment.
