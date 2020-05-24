@@ -79,18 +79,106 @@
 
                 //create buildings
                 var index = 0;
+                var roadX = [];
+                var road = 0;
+                while (road < planeSize) {
+                    road += Math.floor(Math.random() * 2) + 4;
+                    roadX.push(road);
+                }
+                var roadZ = [];
+                road = 0;
+                while (road < planeSize) {
+                    road += Math.floor(Math.random() * 2) + 4;
+                    roadZ.push(road);
+                }
                 for(var r = -planeSize/2; r < planeSize/2; r++) {
+                    //check for roads
+                    var rCont = false;
+                    for (var i = 0; i < roadX.length; i++) {
+                        if (r + planeSize / 2 == roadX[i]) {
+                            rCont = true;
+                            break;
+                        }
+                    }
+                    if (rCont) {
+                        continue;
+                    }
+
                     for(var c = -planeSize/2; c < planeSize/2; c++) {
+                        //check for roads
+                        var cCont = false;
+                        for (var j = 0; j < roadZ.length; j++) {
+                            if (c + planeSize / 2 == roadZ[j]) {
+                                cCont = true;
+                                break;
+                            }
+                        }
+                        if (cCont) {
+                            continue;
+                        }
                         var geometry = new THREE.BoxGeometry();
-                        var material = new THREE.MeshPhongMaterial({color:0x00ff00});
+                        var grey = (Math.random() * 0.4) + 0.6;
+                        var gray = new THREE.Color(grey, grey, grey);
+
+                        //set lights
+                        var material = new THREE.MeshPhongMaterial({color: 0xffe692, emissive: 0xffe692, emissiveIntensity: Math.random() * 0.4});
+
+
                         var cube = new THREE.Mesh(geometry, material);
-                        cube.scale.y = (noiseData[index++] / 255) * 10;
-                        cube.scale.x = .7;
-                        cube.scale.z = .7;
+                        if (Math.random() > 0.98) {
+                            cube = new THREE.Mesh(geometry, material);
+                            cube.scale.y = (noiseData[index++] / 128) * 10;
+                            cube.emissive = 0xff0000;
+                            cube.emissiveIntensity = 100;
+
+                            //spike point
+                            var spike = new THREE.Mesh(geometry, new THREE.MeshPhongMaterial({color: gray}));
+                            spike.scale.y = (noiseData[index - 1] / 128) * 13;
+                            spike.position.z = planeCenter.z + c + spike.scale.z/2;
+                            spike.position.x = r + spike.scale.x / 2;
+                            spike.position.y = planeCenter.y + spike.scale.y / 2;
+                            spike.scale.x = .1;
+                            spike.scale.z = .1;
+                            scene.add(spike);
+                        }
+                        else {
+                            cube.scale.y = (noiseData[index++] / 255) * Math.random() * 10;
+                        }
                         cube.position.z = planeCenter.z + c + cube.scale.z/2;
                         cube.position.x = r + cube.scale.x / 2;
+                        cube.scale.x = .8;
+                        cube.scale.z = .8;
                         cube.position.y = planeCenter.y + cube.scale.y / 2;
                         scene.add(cube);
+
+                        //add neon sign
+                        if (Math.random() > 0.9 && cube.scale.y > 2) {
+                            var neoncolor = new THREE.Color();
+                            neoncolor.setHSL(Math.random(), 0.91, 0.56);
+                            var material2 = new THREE.MeshPhongMaterial({color: neoncolor, emissive: neoncolor, emissiveIntensity: 0.7});
+                            var sign = new THREE.Mesh(geometry, material2);
+                            sign.position.z = planeCenter.z + c + sign.scale.z / 2;
+                            sign.position.x = r + sign.scale.x / 2;
+                            sign.position.y = cube.scale.y - planeSize / 4;
+                            sign.scale.y = 0.5;
+                            scene.add(sign);
+                        }
+
+                        //scaffolding
+                        var sHeight = 0.6;
+                        var top = cube.scale.y + 0.6;
+                        while (sHeight < top) {
+                            var material3 = new THREE.MeshPhongMaterial({color: 0xffffff});
+                            var scaffolding = new THREE.Mesh(geometry, material3);
+                            scaffolding.position.z = planeCenter.z + c + scaffolding.scale.z / 2;
+                            scaffolding.position.x = r + scaffolding.scale.x / 2;
+                            scaffolding.position.y = sHeight - planeSize / 4;
+                            scaffolding.scale.y = 0.1;
+                            scaffolding.scale.x = .9;
+                            scaffolding.scale.z = .9;
+                            scene.add(scaffolding);
+                            sHeight += 0.2;
+                        }
                     }
                 }
             }
