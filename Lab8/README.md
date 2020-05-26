@@ -4,7 +4,7 @@ Procedural Generation.
 Three.js (Part 2) was the selected assignment.
 
 Inspired Image:  
-<img src="images/citsyscape_inspo.jpg" width="400">
+<img src="images/cityscape_inspo.jpg" width="400">
 
 Created Generative City:  
 <img src="images/lab8demo.png" width="400">
